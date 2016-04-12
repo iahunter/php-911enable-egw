@@ -1,0 +1,29 @@
+{
+    "name": "iahunter/php-911enable-egw",
+    "type": "library",
+    "description": "911Enable EGW API PHP Library",
+    "keywords": [
+        "php5",
+        "911enable"
+        ],
+    "homepage": "https://github.com/iahunter/php-911enable-egw",
+    "license": "LGPL3.0",
+    "authors": [
+        {
+            "name": "iahunter",
+            "email": "travisriesenberg@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "EmgergencyGateway\\": "lib"
+        }
+    }
+}
