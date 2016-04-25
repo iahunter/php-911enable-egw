@@ -1,10 +1,8 @@
 <?php
-
 /**
  * lib/Address.php.
  *
- * This class connects to 911Enable Emergency Gateway via the SOAP/XML interface
- * 
+ * This class provides address handling service for the E911 emergency responder gateway
  *
  * PHP version 5
  *
@@ -23,6 +21,7 @@
  * @category  default
  *
  * @author    Travis Riesenberg
+ * @author    Andrew Jones
  * @copyright 2016 @authors
  * @license   http://www.gnu.org/copyleft/lesser.html The GNU LESSER GENERAL PUBLIC LICENSE, Version 3.0
  */
@@ -40,12 +39,9 @@ class Address
 	public $PC;		// ZIP/Postal code
 	public $NAM;	// Customer Name limited to 20 characters
 
-	public static function fromArray($data)
+	// Helper to convert array responses from the EGW SOAP service to Address objects
+	public static function fromArray(Array $data)
 	{
-		print "I got an array as input\n";
-		print_r($data);
-		// TODO: check the input that contains all required fields!
-		// TODO: Do we need to track any EXTRA fields?
 		return new self(
 						$data["LOC"],
 						$data["HNO"],
@@ -58,6 +54,7 @@ class Address
 					);
     }
 
+	// This accepts a unified $address line as 123 soap st.\nSuite #3 and parses out the house number, street, and added location info
 	public static function fromString($address, $city, $state, $country, $zip, $customername)
 	{
 		$housenumber = "";
@@ -67,24 +64,25 @@ class Address
 		// if there are MULTIPLE LINES of address, the first is house number + street, the rest is LOCATION info
 		$lines = preg_split( '/\r\n|\r|\n/', $address );
 		if(count($lines) > 1) {
+			// First line is the house number + street name
 			$address = array_shift($lines);
+			// Remaining lines are additional location information
 			$location = implode(' ', $lines);
 		}
 
-		/* Take the address and split it into house number + street name (digits?)[whitespaces](street)
-		/^(\d+[\S]+)\s+(.+)/
+		/* Take the address and split it into (house number) (street name) as (digits?)[whitespaces](street)
+		/^(\d+[\S]*?)\s+(.+)/
 			^ assert position at start of the string
-			1st Capturing group (\d+[\S]+)
+			1st Capturing group (\d+[\S]*?)
 				\d+ match a digit [0-9]
 					Quantifier: + Between one and unlimited times, as many times as possible, giving back as needed [greedy]
-				[\S]+ match a single character present in the list below
-					Quantifier: + Between one and unlimited times, as many times as possible, giving back as needed [greedy]
+				[\S]*? match a single character present in the list below
+					Quantifier: *? Between zero and unlimited times, as few times as possible, expanding as needed [lazy]
 					\S match any non-white space character [^\r\n\t\f ]
 			\s+ match any white space character [\r\n\t\f ]
 				Quantifier: + Between one and unlimited times, as many times as possible, giving back as needed [greedy]
 			2nd Capturing group (.+)
 				.+ matches any character (except newline)
-					Quantifier: + Between one and unlimited times, as many times as possible, giving back as needed [greedy]
 		*/
 		$REGEX = "/^(\d+[\S]*?)\s+(.+)/";
 		if(preg_match($REGEX, $address, $hits)) {
@@ -106,6 +104,7 @@ class Address
 					);
 	}
 
+	// Constructor for Address objects
     public function __construct($location,
 								$housenumber,
 								$street,
@@ -116,6 +115,15 @@ class Address
 								$customername
 								)
 	{
+		// Make sure all the mandatory fields are filled out!
+		if(!$housenumber) { throw new \Exception("Address missing house number"	); }
+		if(!$street		) { throw new \Exception("Address missing street"		); }
+		if(!$city		) { throw new \Exception("Address missing city"			); }
+		if(!$state		) { throw new \Exception("Address missing state/region"	); }
+		if(!$country	) { throw new \Exception("Address missing country"		); }
+		if(!$zip		) { throw new \Exception("Address missing zip/post code"); }
+
+		// Set our properties to their values
 		$this->LOC	= $location;
 		$this->HNO	= $housenumber;
 		$this->RD	= $street;
@@ -124,21 +132,29 @@ class Address
 		$this->country	= $country;
 		$this->PC	= $zip;
 		$this->NAM	= $customername;
-		
-		// dot dot dot
-		//print "Got a bunch of little pieces\n";
+		// Is there anything else we NEED to track?
     }
 
-	public function AndrewAddressParser($STRING)
-	{
-		print "Address Function Goes here. ";
-	}
-
+	// Spit out the address as a string we can print on an envelope and mail
 	public function __toString()
 	{
-		print "Expelium lavoOOOOHie-sa\n";
+		/*
+			Shell's house of Korn
+			123 Soap St.
+			Suite #3
+			Arlington, VA 12345
+			United States of Awesome
+		*/
+		return <<<END
+{$this->NAM}
+{$this->HNO} {$this->RD}
+{$this->LOC}
+{$this->A3}, {$this->A1} {$this->PC}
+{$this->country}
+END;
 	}
 
+	// This array format is for the EGW ERL SOAP calls to consume. letter case, field order, etc all matter apparently
 	public function __toArray()
 	{
 		return [
@@ -154,4 +170,3 @@ class Address
 	}
 
 }
-
