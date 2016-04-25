@@ -1,9 +1,9 @@
 <?php
 namespace Test;
 
-require __DIR__.'/../lib/Address.php';
+require_once __DIR__.'/../lib/Address.php';
 
-class Address extends \PHPUnit_Framework_TestCase
+class AddressTest extends \PHPUnit_Framework_TestCase
 {
     //protected $CLIENT; // for api call stuff later?
 
@@ -16,7 +16,7 @@ class Address extends \PHPUnit_Framework_TestCase
     /**
     * @test Normal street address
     */
-    public function Valid_Address_Standard()
+    public function Success_Address_Standard()
     {
         print " Running " . __METHOD__  . "\n";
 		$egwaddress = \EmergencyGateway\Address::fromString(
@@ -57,7 +57,7 @@ class Address extends \PHPUnit_Framework_TestCase
     /**
     * @test Single number house number street address
     */
-    public function Valid_Address_Single_House_Number()
+    public function Success_Address_Single_House_Number()
     {
         print " Running " . __METHOD__  . "\n";
 		$egwaddress = \EmergencyGateway\Address::fromString(
@@ -76,7 +76,7 @@ class Address extends \PHPUnit_Framework_TestCase
     /**
     * @test Suite and location on new line after house number and street
     */
-    public function Valid_Suite_After_Address()
+    public function Success_Suite_After_Address()
     {
         print " Running " . __METHOD__  . "\n";
 		$egwaddress = \EmergencyGateway\Address::fromString(
@@ -97,7 +97,7 @@ Suite #3A",
     /**
     * @test Hyphenated house number and street
     */
-    public function Valid_Hyphenated_House_Number()
+    public function Success_Hyphenated_House_Number()
     {
         print " Running " . __METHOD__  . "\n";
 		$egwaddress = \EmergencyGateway\Address::fromString(

@@ -19,7 +19,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * @category  default
- *
  * @author    Travis Riesenberg
  * @author    Andrew Jones
  * @copyright 2016 @authors
@@ -30,14 +29,14 @@ namespace EmergencyGateway;
 class Address
 {
 	// These are Emergency Gateway / E911 terms for location information
-	public $LOC;	// Location (GPS or free-form other information) limit to 60 characters
-	public $HNO;	// House Number (street address NUMBER)
+	public $LOC;		// Location (GPS or free-form other information) limit to 60 characters
+	public $HNO;		// House Number (street address NUMBER)
 	public $RD;		// Street
 	public $A3;		// City
 	public $A1;		// State/Province
-	public $country;// Country
+	public $country;	// Country
 	public $PC;		// ZIP/Postal code
-	public $NAM;	// Customer Name limited to 20 characters
+	public $NAM;		// Customer Name limited to 20 characters
 
 	// Helper to convert array responses from the EGW SOAP service to Address objects
 	public static function fromArray(Array $data)
