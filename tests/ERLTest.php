@@ -13,6 +13,7 @@ class ERLTest extends \PHPUnit_Framework_TestCase
 	// data used in multiple test cases
 	protected $ADDRESS;
 	protected $ERLNAME;
+	protected $ELINS;
 
     // This function is run before every test
     public function Setup()
@@ -23,6 +24,7 @@ class ERLTest extends \PHPUnit_Framework_TestCase
 												E911_SOAP_USER,
 												E911_SOAP_PASS);
 		$this->ERLNAME = "TRAVISTEST";
+		$this->ELINS = "4025550000,4025550001";
 
 		$LOCATION = "";			// Location can be used to send other information such as GPS or floor info. Limited to max 60, First 20 most important
 		$HOUSENUMBER = "1234";
@@ -63,6 +65,16 @@ class ERLTest extends \PHPUnit_Framework_TestCase
     {
         print " Running " . __METHOD__  . "\n";
 		$RESULT = $this->EGW->addERL($this->ERLNAME,$this->ADDRESS);
+		$this->assertTrue($RESULT);
+	}
+	
+	/**
+    * @test Update an ERL with ELINs to the EGW
+    */
+    public function Success_Update_ERL()
+    {
+        print " Running " . __METHOD__  . "\n";
+		$RESULT = $this->EGW->addERL($this->ERLNAME,$this->ADDRESS,$this->ELINS);
 		$this->assertTrue($RESULT);
 	}
 

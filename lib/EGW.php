@@ -60,7 +60,7 @@ class EGW
 		$this->PASSWORD = $PASSWORD;
     }
 
-	public function addERL($NAME,$ADDRESS)
+	public function addERL($NAME,$ADDRESS,$ELINS)
 	{	
 	// TODO: make sure this is validated. seperate add and updates. throw exception on adds if exists. 
 		$params = array(
@@ -69,7 +69,8 @@ class EGW
 				'erl_id' 						=> $NAME,
 				'local_gateway_enabled' 		=> false,
 				'force_csz'						=> 1,
-				'civicAddress' 					=> $ADDRESS
+				'civicAddress' 					=> $ADDRESS,
+				'elins'							=> $ELINS
 		);
 		
 		// This function adds a new ERL to the EGW database with the parameters passed in.
