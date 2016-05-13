@@ -180,7 +180,6 @@ class EGW
 	public function add_switch($SWITCH)
 	{
 		// This function adds a new Switch to the EGW database with the parameters passed in.
-		
 		// Feed in $SWITCH array with any of following variables included. 
 		$SWITCHIP = $SWITCH['switch_ip'];
 		$VENDOR = $SWITCH['switch_vendor'];
@@ -240,7 +239,7 @@ class EGW
 
 	public function update_switch($SWITCH)
 	{
-		// This function adds a new Switch to the EGW database with the parameters passed in.
+		// This function updates and existing Switch in the EGW database with the parameters passed in.
 		// FYI - Update Switch IP Not supported. Must Delete and ReAdd with new IP and Settings. 
 		// Feed in $SWITCH array with any of following variables included. 
 		$SWITCHIP = $SWITCH['switch_ip'];
