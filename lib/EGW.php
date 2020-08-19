@@ -38,7 +38,7 @@ class EGW
 	// Credentials
 	private $USERNAME;
 	private $PASSWORD;
-	private $SNMP_RW = SNMP_RW;
+	private $SNMP_RW;
 
     // Constructor sets up our soap client with WSDL to talk to Call Manager
 
@@ -46,11 +46,19 @@ class EGW
                                 $URL,
                                 $SCHEMA,
 								$USERNAME,
-								$PASSWORD
+								$PASSWORD,
+								$SNMP_RW
                                 ) {
         $OPTIONS = [
                     'trace'                => true,
                     'exceptions'           => true,
+					'stream_context'        => stream_context_create(
+                        ['ssl' => [
+                            'verify_peer'              => false,
+                            'verify_peer_name'         => false,
+                            'allow_self_signed'        => true,
+                            ],
+                        ]),
                     'connection_timeout'   => 10,
                     'location'             => $URL,
                    ];
@@ -58,6 +66,8 @@ class EGW
         $this->SOAPCALLS = [];
 		$this->USERNAME = $USERNAME;
 		$this->PASSWORD = $PASSWORD;
+		
+		$this->SNMP_RW = $SNMP_RW; 
     }
 
 	public function addERL($NAME,$ADDRESS,$ELINS)
@@ -271,7 +281,105 @@ class EGW
 			);
 		$result = $this->SOAPCLIENT->updateSwitchRequest($params);
 		return $result;
-}
+	}
+	
+	public function add_endpoint(array $array)
+	{
+		// This function adds a new Switch to the EGW database with the parameters passed in.
+		// Feed in $array with any of following variables included.
+		
+		$DISPLAY = $PBX = $EXT = $MAC = $NAME = $IP = $ERL = "";
+
+		if(isset($array['display_name'])){
+			$DISPLAY = $array['display_name'];	
+		}
+		if(isset($array['ip_pbx_name'])){
+			$PBX = $array['ip_pbx_name'];
+		}
+		if(isset($array['endpoint'])){
+			$EXT = $array['endpoint'];
+		}
+		if(isset($array['mac_address'])){
+			$MAC = $array['mac_address'];
+		}
+		if(isset($array['device_name'])){
+			$NAME = $array['device_name'];
+		}
+		if(isset($array['erl_id'])){
+			$ERL = $array['erl_id'];
+		}
+		if(isset($array['ip_address'])){
+			$IP = $array['ip_address'];
+		}
+		
+		// Feed in $SWITCH array with any of following variables included.
+		
+		$params = array(
+									'username' 					=> $this->USERNAME,
+									'password' 					=> $this->PASSWORD,
+									'display_name'				=>  $DISPLAY,
+									'endpoint'					=>  $EXT,
+									'ip_pbx_name'				=>  $PBX,
+									'mac_address'				=>	$MAC,
+									'device_name'				=>  $NAME,
+									'erl_id'					=>  $ERL,
+									'ip_address'				=>	$IP,
+			);
+			
+		//return $params; 
+		
+		$result = $this->SOAPCLIENT->addOrUpdateEndpointRequest($params);
+		return $result;
+	}
+	
+	public function delete_endpoint(array $array)
+	{
+		// This function adds a new Switch to the EGW database with the parameters passed in.
+		// Feed in $array with any of following variables included.
+		
+		$DISPLAY = $PBX = $EXT = $MAC = $NAME = $IP = $ERL = "";
+
+		if(isset($array['display_name'])){
+			$DISPLAY = $array['display_name'];	
+		}
+		if(isset($array['ip_pbx_name'])){
+			$PBX = $array['ip_pbx_name'];
+		}
+		if(isset($array['endpoint'])){
+			$EXT = $array['endpoint'];
+		}
+		if(isset($array['mac_address'])){
+			$MAC = $array['mac_address'];
+		}
+		if(isset($array['device_name'])){
+			$NAME = $array['device_name'];
+		}
+		if(isset($array['erl_id'])){
+			$ERL = $array['erl_id'];
+		}
+		if(isset($array['ip_address'])){
+			$IP = $array['ip_address'];
+		}
+		
+		// Feed in $SWITCH array with any of following variables included.
+		
+		$params = array(
+									'username' 					=> $this->USERNAME,
+									'password' 					=> $this->PASSWORD,
+									'display_name'				=>  $DISPLAY,
+									'endpoint'					=>  $EXT,
+									'ip_pbx_name'				=>  $PBX,
+									'mac_address'				=>	$MAC,
+									'device_name'				=>  $NAME,
+									'erl_id'					=>  $ERL,
+									'ip_address'				=>	$IP,
+			);
+			
+		//return $params; 
+		
+		$result = $this->SOAPCLIENT->deleteEndpointRequest($params);
+		return $result;
+	}
 
 }
 
