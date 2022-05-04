@@ -238,7 +238,7 @@ class EGW
 								'switch_ip'						=> $SWITCHIP,
 								'switch_port_name'				=> "",
 							],
-						'switch_or_port_erl'	=> $ERLNAME,
+						//'switch_or_port_erl'	=> $ERLNAME,
 					
 				],
 	);
